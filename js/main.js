@@ -1,53 +1,64 @@
 var taskList = new TaskList();
 getLocal();
 
-function clearForm(){
-    getEle("newTask").value = "";
+function clearForm() {
+  getEle("newTask").value = "";
 }
 
-getEle('addTask').addEventListener("click", function () {
-    var newTask = getEle("newTask").value;
-    var id = Math.random();
-    var task = new Task(id, newTask, 'todo');
-    var valid = true;
-    valid =  kiemTraRong(task.taskName, "#tbtodo", "Todo");
-    if (!valid) {
-        return;
-      }
-    taskList.addTask(task);
-    rederListTask(taskList.arr);
-    setLocal();
-    clearForm()
+getEle("addTask").addEventListener("click", function () {
+  var newTask = getEle("newTask").value;
+  var id = Math.random();
+  var task = new Task(id, newTask, "todo");
+  var valid = true;
+  valid = kiemTraRong(task.taskName, "#tbtodo", "Todo");
+  if (!valid) {
+    return;
+  }
+  taskList.addTask(task);
+  rederListTask(taskList.arr);
+  setLocal();
+  clearForm();
 });
 
-const resultOrderByName = () => {
-    taskList.arr.sort((prodNext,prod) => {
-        let nameProduct = prod.taskName.toLocaleLowerCase();
-       let nameProductNext = prodNext.taskName.toLocaleLowerCase();
-       if(nameProductNext < nameProduct){
-        
-        return -1
-       }
-       return 1;
-    })
-}
-console.log(resultOrderByName);
+const resultdown = () => {
+  taskList.arr.sort((prodNext, prod) => {
+    let nameProduct = prod.taskName.toLocaleLowerCase();
+    let nameProductNext = prodNext.taskName.toLocaleLowerCase();
+    if (nameProductNext < nameProduct) {
+      return -1;
+    }
+    return 1;
+  });
+  rederListTask(taskList.arr);
+};
+
+const resultup = () => {
+  taskList.arr.sort((prodNext, prod) => {
+    let nameProduct = prod.taskName.toLocaleLowerCase();
+    let nameProductNext = prodNext.taskName.toLocaleLowerCase();
+    if (nameProductNext > nameProduct) {
+      return -1;
+    }
+    return 1;
+  });
+  rederListTask(taskList.arr);
+};
 
 function rederListTask(arr) {
-    var arrTodo = [];
-    var arrComplete = [];
-    for (var i = 0; i < arr.length; i++){
-        if(arr[i].status === 'todo'){
-            arrTodo += taoBang(arr[i]);
-        }else{
-            arrComplete += taoBang(arr[i]);
-        }
+  var arrTodo = [];
+  var arrComplete = [];
+  for (var i = 0; i < arr.length; i++) {
+    if (arr[i].status === "todo") {
+      arrTodo += taoBang(arr[i]);
+    } else {
+      arrComplete += taoBang(arr[i]);
     }
-    getEle('todo').innerHTML = arrTodo;
-    getEle('complete').innerHTML = arrComplete;
+  }
+  getEle("todo").innerHTML = arrTodo;
+  getEle("complete").innerHTML = arrComplete;
 }
 function taoBang(arr) {
-    return `
+  return `
         <li>
             <span>${arr.taskName}</span>
              <div class="buttons">
@@ -62,31 +73,31 @@ function taoBang(arr) {
         `;
 }
 function deleteTask(id) {
-    taskList.deleteTask(id);
-    rederListTask(taskList.arr);
-    setLocal();
+  taskList.deleteTask(id);
+  rederListTask(taskList.arr);
+  setLocal();
 }
 function changeStatus(id) {
-    var task = taskList.layThongTinTask(id);
-    console.log(task);
-    if (task.status === 'todo') {
-        task.status = 'complete';
-    } else {
-        task.status = 'todo';
-    }
-    taskList.capNhatTask(task);
-    rederListTask(taskList.arr);
-    setLocal();
+  var task = taskList.layThongTinTask(id);
+  console.log(task);
+  if (task.status === "todo") {
+    task.status = "complete";
+  } else {
+    task.status = "todo";
+  }
+  taskList.capNhatTask(task);
+  rederListTask(taskList.arr);
+  setLocal();
 }
 function setLocal() {
-    localStorage.setItem("TaskList", JSON.stringify(taskList.arr));
+  localStorage.setItem("TaskList", JSON.stringify(taskList.arr));
 }
 function getLocal() {
-    if (localStorage.getItem("TaskList")) {
-        taskList.arr = JSON.parse(localStorage.getItem("TaskList"));
-        rederListTask(taskList.arr);
-    }
+  if (localStorage.getItem("TaskList")) {
+    taskList.arr = JSON.parse(localStorage.getItem("TaskList"));
+    rederListTask(taskList.arr);
+  }
 }
 function getEle(id) {
-    return document.getElementById(id);
+  return document.getElementById(id);
 }
